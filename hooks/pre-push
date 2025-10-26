@@ -1,0 +1,17 @@
+#!/bin/bash
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Regex pour valider le format de branche
+pattern="^(feature|bugfix|hotfix|chore|refactor|test|doc)/[0-9]+-[a-z0-9-]+$"
+
+if [[ "$current_branch" != "main" && "$current_branch" != "preprod" ]]; then
+    if ! echo "$current_branch" | grep -qE "$pattern"; then
+        echo "❌ Erreur: Le nom de branche ne respecte pas le format"
+        echo "Format attendu: <type>/<ticket-id>-<description-kebab-case>"
+        echo "Exemple: feature/432-ajout-export-csv"
+        exit 1
+    fi
+fi
+
+echo "✅ Nom de branche valide"
