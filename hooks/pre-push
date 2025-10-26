@@ -15,3 +15,4 @@ if [[ "$current_branch" != "main" && "$current_branch" != "preprod" ]]; then
 fi
 
 echo "✅ Nom de branche valide"
+
