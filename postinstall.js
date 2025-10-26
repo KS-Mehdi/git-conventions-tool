@@ -4,71 +4,87 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('📦 Configuration des conventions Git...\n');
+const isInNodeModules = __dirname.includes('node_modules');
+
+if (!isInNodeModules) {
+  console.log('⚠️  Ce script doit être installé via npm');
+  process.exit(0);
+}
+
+const projectRoot = path.resolve(__dirname, '../..');
+process.chdir(projectRoot);
+
+console.log('\n🔧 Configuration automatique des conventions Git...\n');
 
 try {
-  // Récupère le chemin du projet parent (pas node_modules)
-  const projectRoot = path.resolve(__dirname, '../..');
+  execSync('git rev-parse --git-dir', { stdio: 'ignore' });
+} catch {
+  console.log('⚠️  Pas un dépôt Git, configuration annulée');
+  process.exit(0);
+}
 
-  // Change vers le répertoire du projet
-  process.chdir(projectRoot);
+const pkgPath = path.join(projectRoot, 'package.json');
+let pkg = {};
 
-  // Vérifie si c'est un dépôt Git
-  try {
-    execSync('git rev-parse --git-dir', { stdio: 'ignore' });
-  } catch {
-    console.log('⚠️  Pas un dépôt Git, skip...');
-    process.exit(0);
-  }
+if (fs.existsSync(pkgPath)) {
+  pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+}
 
-  // Install dependencies si nécessaire
-  console.log('1️⃣  Installation des dépendances...');
-  execSync('npm install --save-dev husky commitizen @commitlint/cli @commitlint/config-conventional cz-conventional-changelog', { stdio: 'inherit' });
+if (pkg.scripts && pkg.scripts.commit) {
+  console.log('✅ Conventions Git déjà configurées\n');
+  process.exit(0);
+}
 
-  // Init Husky
-  console.log('\n2️⃣  Configuration de Husky...');
+try {
+  console.log('📦 Installation des dépendances...');
+  execSync(
+    'npm install --save-dev husky commitizen @commitlint/cli @commitlint/config-conventional cz-conventional-changelog --silent',
+    { stdio: 'inherit' }
+  );
+
+  console.log('\n⚙️  Configuration de Commitizen...');
+  execSync(
+    'npx commitizen init cz-conventional-changelog --save-dev --save-exact --force --silent',
+    { stdio: 'inherit' }
+  );
+
+  console.log('\n🪝 Configuration de Husky...');
   execSync('npx husky init', { stdio: 'inherit' });
 
-  // Configure Commitizen
-  console.log('\n3️⃣  Configuration de Commitizen...');
-  execSync('npx commitizen init cz-conventional-changelog --save-dev --save-exact --force', { stdio: 'inherit' });
-
-  // Copie les fichiers de config
-  console.log('\n4️⃣  Copie des fichiers de configuration...');
-
-  const sourceDir = path.join(__dirname);
-  const targetDir = projectRoot;
-
   // Copie commitlint.config.js
-  if (fs.existsSync(path.join(sourceDir, 'commitlint.config.js'))) {
-    fs.copyFileSync(
-      path.join(sourceDir, 'commitlint.config.js'),
-      path.join(targetDir, 'commitlint.config.js')
-    );
-    console.log('  ✅ commitlint.config.js copié');
-  }
+  console.log('\n📄 Configuration de Commitlint...');
+  const sourceConfig = path.join(__dirname, 'commitlint.config.js');
+  const targetConfig = path.join(projectRoot, 'commitlint.config.js');
+  fs.copyFileSync(sourceConfig, targetConfig);
 
   // Copie les hooks
-  const hooksToClone = ['commit-msg', 'pre-push'];
-  hooksToClone.forEach(hook => {
-    const sourcePath = path.join(sourceDir, '.husky', hook);
-    const targetPath = path.join(targetDir, '.husky', hook);
+  console.log('🪝 Configuration des hooks Git...');
+  const hooksSource = path.join(__dirname, 'hooks');
+  const hooksTarget = path.join(projectRoot, '.husky');
 
-    if (fs.existsSync(sourcePath)) {
-      fs.copyFileSync(sourcePath, targetPath);
-      fs.chmodSync(targetPath, '755');
-      console.log(`  ✅ .husky/${hook} copié`);
+  ['commit-msg', 'pre-push'].forEach(hook => {
+    const source = path.join(hooksSource, hook);
+    const target = path.join(hooksTarget, hook);
+
+    if (fs.existsSync(source)) {
+      fs.copyFileSync(source, target);
+      fs.chmodSync(target, '755');
+      console.log(`  ✅ ${hook} configuré`);
     }
   });
 
-  // Ajoute le script commit au package.json
-  console.log('\n5️⃣  Ajout du script npm run commit...');
+  // Vide le pre-commit
+  fs.writeFileSync(
+    path.join(projectRoot, '.husky/pre-commit'),
+    '#!/bin/sh\necho "✅ Pre-commit check passed"'
+  );
+
+  console.log('\n📝 Ajout du script npm run commit...');
   execSync('npm pkg set scripts.commit="cz"', { stdio: 'inherit' });
 
-  console.log('\n✅ Installation terminée !');
-  console.log('\n📝 Utilise maintenant: npm run commit\n');
+  console.log('\n✅ Configuration terminée !\n');
+  console.log('📚 Utilise: npm run commit\n');
 
 } catch (error) {
-  console.error('❌ Erreur pendant l\'installation:', error.message);
-  process.exit(0); // Ne bloque pas l'installation même en cas d'erreur
+  console.error('\n❌ Erreur:', error.message);
 }

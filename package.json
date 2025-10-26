@@ -1,10 +1,31 @@
 {
   "name": "@ks-mehdi/git-conventions-tool",
   "version": "1.0.0",
+  "description": "Automated Git conventions setup for all projects",
+  "main": "postinstall.js",
   "scripts": {
+    "postinstall": "node postinstall.js",
     "commit": "cz",
     "test": "echo \"No tests yet\""
   },
+  "files": [
+    "postinstall.js",
+    "commitlint.config.js",
+    "hooks"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ks-mehdi/git-conventions-tool.git"
+  },
+  "keywords": [
+    "git",
+    "conventions",
+    "commitizen",
+    "husky",
+    "commitlint"
+  ],
+  "author": "ks-mehdi",
+  "license": "MIT",
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
     "commitizen": "^4.3.1",
