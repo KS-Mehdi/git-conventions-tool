@@ -7,7 +7,7 @@ pattern="^(feature|bugfix|hotfix|chore|refactor|test|doc)/[0-9]+-[a-z0-9-]+$"
 
 if [[ "$current_branch" != "main" && "$current_branch" != "preprod" ]]; then
     if ! echo "$current_branch" | grep -qE "$pattern"; then
-        echo " Erreur: Le nom de branche ne respecte pas le format"
+        echo "Erreur: Le nom de branche ne respecte pas le format"
         echo "Format attendu: <type>/<ticket-id>-<description-kebab-case>"
         echo "Exemple: feature/432-ajout-export-csv"
         exit 1
@@ -15,4 +15,3 @@ if [[ "$current_branch" != "main" && "$current_branch" != "preprod" ]]; then
 fi
 
 echo "✅ Nom de branche valide"
-
