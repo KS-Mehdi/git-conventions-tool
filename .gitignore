@@ -36,3 +36,4 @@ temp/
 
 # OS files
 Thumbs.db
+.npmrc

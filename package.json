@@ -1,6 +1,9 @@
 {
-  "name": "git-conventions-tool",
+  "name": "@ks-mehdi/git-conventions-tool",
   "version": "1.0.0",
+  "publishConfig": {
+    "@ks-mehdi:registry": "https://npm.pkg.github.com"
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
     "commitizen": "^4.3.1",
@@ -15,6 +18,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "commit": "cz"
+    "commit": "cz",
+    "test": "echo \"No tests yet\""
   }
 }
