@@ -1,4 +1,3 @@
-cat > .husky/pre-push << 'EOF'
 #!/bin/sh
 branch=$(git rev-parse --abbrev-ref HEAD)
 
@@ -7,6 +6,3 @@ if [[ ! "$branch" =~ ^(feature|bugfix|hotfix|chore|refactor|test|doc)/[0-9]+-[a-
   echo "Format attendu: <type>/<ticket-id>-<description>"
   exit 1
 fi
-EOF
-
-chmod +x .husky/pre-push

@@ -4,6 +4,15 @@
   "publishConfig": {
     "@ks-mehdi:registry": "https://npm.pkg.github.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ks-mehdi/git-conventions-tool.git"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "commit": "cz",
+    "test": "echo \"No tests yet\""
+  },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
     "commitizen": "^4.3.1",
@@ -15,10 +24,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "scripts": {
-    "prepare": "husky",
-    "commit": "cz",
-    "test": "echo \"No tests yet\""
   }
 }
