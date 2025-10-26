@@ -1,4 +1,4 @@
-#!/bin/bash
+echo '#!/bin/sh
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
