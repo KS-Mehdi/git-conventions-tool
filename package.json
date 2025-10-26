@@ -1,21 +1,12 @@
 {
   "name": "@ks-mehdi/git-conventions-tool",
   "version": "1.0.0",
-  "publishConfig": {
-    "@ks-mehdi:registry": "https://npm.pkg.github.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ks-mehdi/git-conventions-tool.git"
-  },
   "scripts": {
-    "prepare": "husky",
     "commit": "cz",
     "test": "echo \"No tests yet\""
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
-    "@ks-mehdi/git-conventions-tool": "github:ks-mehdi/git-conventions-tool",
     "commitizen": "^4.3.1",
     "commitlint": "^20.1.0",
     "cz-conventional-changelog": "^3.3.0",
