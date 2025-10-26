@@ -1,4 +1,6 @@
 {
+  "name": "git-conventions-tool",
+  "version": "1.0.0",
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
     "commitizen": "^4.3.1",
